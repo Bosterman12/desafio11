@@ -32,6 +32,7 @@ import orderRouter from './routes/orders.routes.js'
 import jwtRouter from './routes/jwt.routes.js'
 import messagesRouter from './routes/messages.router.js'
 import fakerRouter from './faker/user.routes.js'
+import errorHandler from './middleware/errors.middleware.js'
 
 
 
@@ -199,6 +200,7 @@ app.use( '/api/product' ,express.static(__dirname + '/public'))
 app.use('/api/order', orderRouter)
 app.use('/api/jwt', jwtRouter)
 app.use('/mocking', fakerRouter)
+app.use(errorHandler)
 
 
 

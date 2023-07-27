@@ -1,4 +1,8 @@
 import { findAllCarts, findOneCartByid, createOneCart, updateOneCart, deleteOneCart } from "../services/carts.services.js";
+import { generateErrorAddProduct, generateErrorAddProductToCart } from "../errors/info.js";
+import EErrors from "../errors/enum.js";
+import CustomError from "../errors/customError.js";
+
 
 export const findCarts = async (req,res) => {
     try{
@@ -43,9 +47,29 @@ export const createCart = async (req, res) => {
     const { quantity } = req.body
 
     const cart = await findOneCartByid({_id: cid})
-    
+    if ( !pid || !cid ||!quantity) {
+                CustomError.createError({
+                  name: 'Product creation error',
+                  cause: generateErrorAddProductToCart({
+                    pid,
+                    quantity
+                  }),
+                  message: 'Error adding product to cart',
+                  code: EErrors.INVALID_ARGUMENT,
+                })
+              }
         try {
-         
+        
+           /*if (product._id === undefined || quantity <= 0) {
+                CustomError.createError({
+                  name: 'Product creation error',
+                  cause: generateErrorAddProductToCart({
+                    product,
+                  }),
+                  message: 'Error adding product to cart',
+                  code: EErrors.INVALID_ARGUMENT,
+                })
+              }*/
           const addProductCart = {
             id_prod: pid,
             cant: quantity

@@ -1,10 +1,12 @@
 import { findAllProducts, findOneProductByid, createOneProduct, updateOneProduct,deleteOneProduct } from "../services/products.services.js";
-
+import { generateErrorAddProduct, generateErrorAddProductToCart } from "../errors/info.js";
+import EErrors from "../errors/enum.js";
+import CustomError from "../errors/customError.js";
 export const findAllProd = async (req,res) => {
     try{
         const products = await findAllProducts()
             
-           res.render('home', {
+           /*res.render('home', {
                 products: products.docs,
                 
                 user: req.session.user
@@ -12,9 +14,9 @@ export const findAllProd = async (req,res) => {
                 
                
     
-                })
+                })*/
            //res.status(200).json({message: "products found", products})
-           //res.send(products)
+           res.send(products)
            
            //console.log(products)
           
@@ -47,7 +49,20 @@ export const findOneprod = async (req,res) => {
 export const createOneProd = async (req, res) => {
     const { title, description, code, category, price, stock, status, tumbnail } = req.body
     if (!title || !description || !code || !category  || !price|| !stock|| !status || !tumbnail) {
-      return res.status(400).json({ message: 'Data missing' })
+      //return res.status(400).json({ message: 'Data missing' })
+      CustomError.createError({
+        name: 'Product creation error',
+        cause: generateErrorAddProduct({
+          title,
+          description,
+          price,
+          category,
+          code,
+          stock,
+        }),
+        message: 'Error creating product',
+        code: EErrors.INVALID_TYPES_ERROR,
+      })
     }
     try {
       const newProduct = await createOneProduct(req.body)
